@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Muli&display=swap"
+      rel="stylesheet"
+    />
+    <title>Iniciar Sesion</title>
+    <link rel="stylesheet" href="./styles/login.css" />
+  </head>
+  <body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+   https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCzkAWjVFRAxbdNyd5qqrACKzPwHKs5svc",
+        authDomain: "gred-4fbff.firebaseapp.com",
+        databaseURL: "https://gred-4fbff.firebaseio.com",
+        projectId: "gred-4fbff",
+        storageBucket: "gred-4fbff.appspot.com",
+        messagingSenderId: "1033735019806",
+        appId: "1:1033735019806:web:71c53b666a1c1a86f27d0f",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <header class="header">
+      <img class="header__img" src="assets/logo-tecmm-blanco.png" alt="" />
+    </header>
+    <section class="login">
+      <section class="login__container">
+        <h2>Inicia Sesion</h2>
+        <form autocomplete="off" class="login__container--form">
+          <input
+            required
+            type="email"
+            id="email"
+            class="input"
+            placeholder="Correo"
+          />
+          <input
+            required
+            type="password"
+            class="input"
+            id="password"
+            placeholder="Contraseña"
+          />
+          <button onclick="toggleSignIn()" type="submit" class="button">
+            Iniciar Sesion
+          </button>
+          <div class="login__container--remember">
+            <a href="">Olvide mi contraseña</a>
+          </div>
+        </form>
+        <section class="login__container--socialmedia">
+          <div>
+            <img
+              src="./assets/google-icon.png"
+              onclick="Google()"
+              alt="Google"
+            />
+            <p onclick="Google()">Inicia sesion con Google</p>
+          </div>
+        </section>
+        <p class="login__container--register">
+          No tienes ninguna cuenta <a href="registrate.html">Registrate</a>
+        </p>
+      </section>
+    </section>
+    <footer class="footer">
+      <a href="">Terminos de Uso</a>
+      <a href="">Declaracion de privacidad</a>
+      <a href="">Centro de ayuda</a>
+    </footer>
+  </body>
+  <script>
+    async function Google() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+
+      provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+
+      await firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(function (result) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+          // ...
+        })
+        .catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+        });
+      if (firebase.auth().currentUser) {
+        window.open("./inicio.html", "_self");
+      }
+    }
+
+    async function toggleSignIn() {
+      if (firebase.auth().currentUser) {
+        // [START signout]
+        firebase.auth().signOut();
+        // [END signout]
+      } else {
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        // Sign in with email and pass.
+        // [START authwithemail]
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode === "auth/wrong-password") {
+              alert("Wrong password.");
+            } else {
+              alert(errorMessage);
+            }
+            console.log(error);
+            // [END_EXCLUDE]
+          });
+        if (firebase.auth().currentUser) {
+          window.open("./inicio.html", "_self");
+        }
+        // [END authwithemail]
+      }
+    }
+  </script>
+</html>

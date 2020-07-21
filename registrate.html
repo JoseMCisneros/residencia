@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro</title>
+    <link rel="stylesheet" href="./styles/login.css" />
+  </head>
+  <body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCzkAWjVFRAxbdNyd5qqrACKzPwHKs5svc",
+        authDomain: "gred-4fbff.firebaseapp.com",
+        databaseURL: "https://gred-4fbff.firebaseio.com",
+        projectId: "gred-4fbff",
+        storageBucket: "gred-4fbff.appspot.com",
+        messagingSenderId: "1033735019806",
+        appId: "1:1033735019806:web:71c53b666a1c1a86f27d0f",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <header class="header">
+      <img class="header__img" src="assets/logo-tecmm-blanco.png" alt="" />
+    </header>
+    <section class="login">
+      <section class="login__container">
+        <h2>Registrate</h2>
+        <form autocomplete="off" class="login__container--form">
+          <input
+            required
+            type="email"
+            id="email"
+            class="input"
+            placeholder="Correo"
+          />
+          <input
+            required
+            type="password"
+            id="password"
+            class="input"
+            placeholder="Contraseña"
+          />
+          <input
+            required
+            type="password"
+            id="conpassword"
+            class="input"
+            placeholder="Confirma contraseña"
+          />
+          <button type="submit" class="button" onclick="handleSignUp()">
+            Registrarme
+          </button>
+        </form>
+        <p class="login__container--register">
+          <a href="index.html">Iniciar Sesion</a>
+        </p>
+      </section>
+    </section>
+    <footer class="footer">
+      <a href="">Terminos de Uso</a>
+      <a href="">Declaracion de privacidad</a>
+      <a href="">Centro de ayuda</a>
+    </footer>
+  </body>
+  <script>
+    async function handleSignUp() {
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var conpassword = document.getElementById("conpassword").value;
+      if (password.length < 8) {
+        alert("Ingresar una contraseña con minimo 8 caracteres");
+        return;
+      } else if (password != conpassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+      } else {
+        // Sign in with email and pass.
+        // [START createwithemail]
+        await firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode == "auth/weak-password") {
+              alert("The password is too weak.");
+            } else {
+              alert(errorMessage);
+            }
+            console.log(error);
+            // [END_EXCLUDE]
+          });
+        // [END createwithemail]
+          window.open("./index.html", "_self");
+      }
+    }
+  </script>
+</html>
